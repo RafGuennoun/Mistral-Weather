@@ -71,13 +71,43 @@ class WeatherPageState extends State<WeatherPage>
     return json.decode(response.body);
   }
 
-  void showWeather() async
-  {
-    Map _weatherData = await get5DaysWeather(util.appId, util.defaultCity);
-    //print(_weatherData.toString());
-    //print("khra");
-    print("temp is = ${_weatherData['list'][0]['main']['temp'].toString()}");
-  }
+  // void showWeather() async
+  // {
+  //   Map content = await get5DaysWeather(util.appId, util.defaultCity);
+  //   //print(_weatherData.toString());
+  //   //print("khra");
+  //   //print("temp is = ${_weatherData['list'][0]['main']['temp'].toString()}");
+
+  //   String temp = "${majorer(double.parse(content['list'][0]['main']['temp'].toString())).toString()}";
+
+  //   String icon = content['list'][0]['weather'][0]['icon']; 
+
+  //   String humidity = "${content['list'][0]['main']['humidity'].toString()}";
+
+  //   int time = content['list'][0]['dt']*1000;
+
+
+  //   //Settinig the date from Epoch (UNIX timestamp) to human readable time
+  //   var dateFormat = new DateFormat.H();
+  //   //var timeFormat = new DateFormat.jm();
+    
+  //   var realDate = new DateTime.fromMicrosecondsSinceEpoch(time*1000 , 
+  //     isUtc: true);
+  //   //var realTime = new DateTime.fromMicrosecondsSinceEpoch(_features[index]['properties']['time']*1000 , isUtc: true);
+  //   //We multiply the time * 1000 to get in in millisecondes 
+
+  //   var date = dateFormat.format(realDate);
+  //   //var time = timeFormat.format(realTime);
+
+  //   int tn = DateTime.now().toUtc().millisecondsSinceEpoch;
+
+  //        print("Content dt = ${time.toString()}");
+  //        print("Epoach now = $tn");
+  //        print("real date = ${realDate.toString()}");
+  //        print("Time 5 days ====================== ${date.toString()}:00");
+  //        print("Time now $timeNow");
+
+  // }
 
   Future<String> getTemp() async
   {
@@ -92,7 +122,6 @@ class WeatherPageState extends State<WeatherPage>
   {
     return new FutureBuilder(
       future: getCurrentWeather(util.appId, city == null ? util.defaultCity : city),
-      //future: get5DaysWeather(util.appId, city == null ? util.defaultCity : city),
       builder: (BuildContext context, AsyncSnapshot<Map> snapshot ){
         //Whare we get all JSON data, we set up widgets 
         if(snapshot.hasData)
@@ -102,10 +131,6 @@ class WeatherPageState extends State<WeatherPage>
           return Text("${content['name'].toString()}",
                   style: TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.w600 ),
                 );
-         // });
-          // return Text("${content['name']}",
-          //           style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.w600 ),
-          //         );
         }
         else
         {
@@ -148,7 +173,7 @@ class WeatherPageState extends State<WeatherPage>
         }
         else
         {
-          return Text("° C");
+          return Text("No °");
         }
       });
   }
@@ -172,7 +197,7 @@ class WeatherPageState extends State<WeatherPage>
         }
         else
         {
-          return Text("° C");
+          return Text("No Icon");
         }
       });
 
@@ -203,7 +228,7 @@ class WeatherPageState extends State<WeatherPage>
         }
         else
         {
-          return Text("min / max");
+          return Text("Min° / Max°");
         }
       });
   }
@@ -230,7 +255,7 @@ class WeatherPageState extends State<WeatherPage>
         }
         else
         {
-          return Text("min / max");
+          return Text("Description");
         }
       });
   }
@@ -257,11 +282,326 @@ class WeatherPageState extends State<WeatherPage>
         }
         else
         {
-          return Text("min / max");
+          return Text("T° ressentie");
         }
       });
   }
 
+  Widget updateCloudWidget(String city)
+  {
+    return new FutureBuilder(
+      future: getCurrentWeather(util.appId, city == null ? util.defaultCity : city),
+      builder: (BuildContext context, AsyncSnapshot<Map> snapshot ){
+        //Whare we get all JSON data, we set up widgets 
+        if(snapshot.hasData)
+        {
+          Map content = snapshot.data;
+
+          String clouds = "${content['clouds']['all'].toString()}";
+          
+          return Text("$clouds %",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  );
+         
+        }
+        else
+        {
+          return Text("%");
+        }
+      });
+  }
+
+  Widget updateHumidityWidget(String city)
+  {
+    return new FutureBuilder(
+      future: getCurrentWeather(util.appId, city == null ? util.defaultCity : city),
+      builder: (BuildContext context, AsyncSnapshot<Map> snapshot ){
+        //Whare we get all JSON data, we set up widgets 
+        if(snapshot.hasData)
+        {
+          Map content = snapshot.data;
+
+          String hum = "${content['main']['humidity'].toString()}";
+          
+          return Text("$hum %",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  );
+         
+        }
+        else
+        {
+          return Text("%");
+        }
+      });
+  }
+
+  Widget updateWindSpeedWidget(String city)
+  {
+    return new FutureBuilder(
+      future: getCurrentWeather(util.appId, city == null ? util.defaultCity : city),
+      builder: (BuildContext context, AsyncSnapshot<Map> snapshot ){
+        //Whare we get all JSON data, we set up widgets 
+        if(snapshot.hasData)
+        {
+          Map content = snapshot.data;
+
+          String speed = "${content['wind']['speed'].toString()}";
+          
+          return Text("$speed m/s",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  );
+         
+        }
+        else
+        {
+          return Text("No speed");
+        }
+      });
+  }
+
+  Widget updateWindDirectionWidget(String city)
+  {
+    return new FutureBuilder(
+      future: getCurrentWeather(util.appId, city == null ? util.defaultCity : city),
+      builder: (BuildContext context, AsyncSnapshot<Map> snapshot ){
+        //Whare we get all JSON data, we set up widgets 
+        if(snapshot.hasData)
+        {
+          Map content = snapshot.data;
+
+          String dir = "${content['wind']['deg'].toString()}";
+          
+          return Text("$dir °",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  );
+         
+        }
+        else
+        {
+          return Text("No Direction");
+        }
+      });
+  }
+
+  Widget updatePressureWidget(String city)
+  {
+    return new FutureBuilder(
+      future: getCurrentWeather(util.appId, city == null ? util.defaultCity : city),
+      builder: (BuildContext context, AsyncSnapshot<Map> snapshot ){
+        //Whare we get all JSON data, we set up widgets 
+        if(snapshot.hasData)
+        {
+          Map content = snapshot.data;
+
+          String press = "${content['main']['pressure'].toString()}";
+          
+          return Text("$press hPa",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  );
+         
+        }
+        else
+        {
+          return Text("No Pressure");
+        }
+      });
+  }
+
+  Widget updateVisibilityWidget(String city)
+  {
+    return new FutureBuilder(
+      future: getCurrentWeather(util.appId, city == null ? util.defaultCity : city),
+      builder: (BuildContext context, AsyncSnapshot<Map> snapshot ){
+        //Whare we get all JSON data, we set up widgets 
+        if(snapshot.hasData)
+        {
+          Map content = snapshot.data;
+
+          String vis = "${content['visibility'].toString()}";
+          
+          return Text("$vis MOR",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  );
+         
+        }
+        else
+        {
+          return Text("No Visibility");
+        }
+      });
+  }
+ 
+  Widget updateWeatherTomorrowWidget(String city, int pos)
+  {
+    return new FutureBuilder(
+      future: get5DaysWeather(util.appId, city == null ? util.defaultCity : city),
+      builder: (BuildContext context, AsyncSnapshot<Map> snapshot ){
+        //Whare we get all JSON data, we set up widgets 
+        if(snapshot.hasData)
+        {
+          Map content = snapshot.data;
+
+          String temp = "${majorer(double.parse(content['list'][0]['main']['temp'].toString())).toString()}";
+
+          String icon = content['list'][pos]['weather'][0]['icon']; 
+
+          String humidity = "${content['list'][pos]['main']['humidity'].toString()}";
+
+          int t = content['list'][pos]['dt']*1000;
+
+
+          //Settinig the date from Epoch (UNIX timestamp) to human readable time
+          var dateFormat = new DateFormat.H();
+          //var timeFormat = new DateFormat.jm();
+          
+          var realTime = new DateTime.fromMicrosecondsSinceEpoch(t*1000 , 
+            isUtc: true);
+
+          var time = dateFormat.format(realTime);
+          
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+
+              //time
+              Text("${time.toString()}:00",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+
+              //SizedBox(height: 20,),
+
+              //icon
+              Image.network('http://openweathermap.org/img/w/$icon.png'),
+
+              //SizedBox(height: 10,),
+
+              //humidity
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.invert_colors, color: Colors.grey[100],),
+                  SizedBox(width: 8),
+                  Text("$humidity %",
+                    style: TextStyle(color: Colors.grey[100]),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 10,),
+
+              //tempertature
+              Text("$temp°",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              )
+
+            ],
+          );
+         
+        }
+        else
+        {
+          return Text("...",
+            style: TextStyle(color: Colors.white, fontSize: 25),
+          );
+        }
+      });
+  }
+
+  Widget update5DaysWeatherWidget(String city, int pos)
+  {
+    return new FutureBuilder(
+      future: get5DaysWeather(util.appId, city == null ? util.defaultCity : city),
+      builder: (BuildContext context, AsyncSnapshot<Map> snapshot ){
+        //Whare we get all JSON data, we set up widgets 
+        if(snapshot.hasData)
+        {
+          Map content = snapshot.data;
+
+          //String dir = "${}";
+
+          String tempmin = "${majorer(double.parse(content['list'][0]['main']['temp_min'].toString())).toString()}";
+
+          String tempmax = "${majorer(double.parse(content['list'][0]['main']['temp_max'].toString())).toString()}";
+
+          String icon = content['list'][pos]['weather'][0]['icon']; 
+
+          String humidity = "${content['list'][pos]['main']['humidity'].toString()}";
+
+          int t = content['list'][pos]['dt']*1000;
+
+
+          //Settinig the date from Epoch (UNIX timestamp) to human readable time
+          var dateFormat = new DateFormat.E();
+          //var timeFormat = new DateFormat.jm();
+          
+          var realTime = new DateTime.fromMicrosecondsSinceEpoch(t*1000 , 
+            isUtc: true);
+
+          var date = dateFormat.format(realTime);
+          //var time = timeFormat.format(realTime);
+
+          //int tn = DateTime.now().toUtc().millisecondsSinceEpoch;
+
+          // Image.network(
+          //   'http://openweathermap.org/img/w/$icon.png',
+          //   height: height,
+          //   width:  width,
+          //   );
+          
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+
+              //time
+              Text("${date.toString()}",
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+
+              SizedBox(height: 10,),
+
+              //icon
+              Image.network('http://openweathermap.org/img/w/$icon.png'),
+
+              //SizedBox(height: 10,),
+
+              //humidity
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.invert_colors, color: Colors.grey[100],),
+                  SizedBox(width: 8),
+                  Text("$humidity %",
+                    style: TextStyle(color: Colors.grey[100]),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 25,),
+
+              //tempertature max
+              Text("$tempmin°",
+                style: TextStyle(color: Colors.white, fontSize: 15),
+              ),
+
+              SizedBox(height: 15,),
+
+              //tempertature min
+              Text("$tempmax°",
+                style: TextStyle(color: Colors.white, fontSize: 15),
+              ),
+
+            ],
+          );
+         
+        }
+        else
+        {
+          return Text("...",
+            style: TextStyle(color: Colors.white, fontSize: 25),
+          );
+        }
+      });
+  }
 
   
   @override
@@ -277,6 +617,14 @@ class WeatherPageState extends State<WeatherPage>
       //   title: Text("Mistral"),
       //   centerTitle: true,
       //   backgroundColor: Colors.pink,
+      // ),
+
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: (){
+      //     showWeather();
+      //   },
+      //   backgroundColor: Colors.pink,
+
       // ),
 
       body: Container(
@@ -344,17 +692,27 @@ class WeatherPageState extends State<WeatherPage>
                                   icon: Icon(Icons.search, color: Colors.white,),
                                   onPressed: () {
                                     city = _citySearchController.text;
+                                    //_showAlertMessage
                                     _citySearchController.clear();
-                                    showWeather();
-                                    setState(() {
-                                      updatePlaceNameWidget("$city");
-                                      updateDateAndTimeNow(dateNow, timeNow);
-                                      updateDataTempWidget("$city");
-                                      updateIconTempWidget("$city", (((mesure/4)*2)/4)*3.5, (((size.shortestSide/4)*3)/5)*2);
-                                      updateMinMaxTempWidget("$city");
-                                      updateTempRessentieWidget("$city");
-                                      updateDescriptionTempWidget("$city");
-                                    });
+                                    //showWeather();
+                                      print("Searching ....");
+                                      
+                                      setState(() {
+                                        updatePlaceNameWidget("${city == null ? util.defaultCity : city}");
+                                        updateDateAndTimeNow(dateNow, timeNow);
+                                        updateDataTempWidget("${city == null ? util.defaultCity : city}");
+                                        updateIconTempWidget("${city == null ? util.defaultCity : city}", (((mesure/4)*2)/4)*3.5, (((size.shortestSide/4)*3)/5)*2);
+                                        updateMinMaxTempWidget("${city == null ? util.defaultCity : city}");
+                                        updateTempRessentieWidget("${city == null ? util.defaultCity : city}");
+                                        updateDescriptionTempWidget("${city == null ? util.defaultCity : city}");
+                                        //updateHoursDayTempWidget("$city",0);
+                                        updateCloudWidget("${city == null ? util.defaultCity : city}");
+                                        updateHumidityWidget("${city == null ? util.defaultCity : city}");
+                                        updateWindSpeedWidget("${city == null ? util.defaultCity : city}");
+                                        updateWindDirectionWidget("${city == null ? util.defaultCity : city}");
+                                        updatePressureWidget("${city == null ? util.defaultCity : city}");
+                                        updateVisibilityWidget("${city == null ? util.defaultCity : city}");
+                                      });
                                   }
                                 ),
                               ),
@@ -547,6 +905,7 @@ class WeatherPageState extends State<WeatherPage>
                           ),
                         ),
 
+                        //Description
                         Container(
                           height: (mesure/4),
                           width: size.shortestSide,
@@ -566,6 +925,218 @@ class WeatherPageState extends State<WeatherPage>
 
             myDivider(15,15),
 
+            //Detail essentiels Humidite Wind speed
+            ListTile(
+              contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
+              title: Container(
+                height: mesure,
+                width: size.shortestSide,
+                //color: Colors.grey,
+                child: Center(
+                  child:ListView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    children:<Widget> [
+
+                      //Clouds %
+                      Container(
+                        height: mesure/4,
+                        width: size.shortestSide,
+                        //color: Colors.red[400],
+                        child: Center(
+                          child: Row(
+                            children: [
+                              
+                              //Icon
+                              Container(
+                                height: mesure/4,
+                                width: size.shortestSide/6,
+                                //color: Colors.pinkAccent,
+                                child: Center(child: Icon(Icons.cloud, color: Colors.white,)),
+                              ),
+
+                              //Clouds
+                              Container(
+                                height: mesure/4,
+                                width: (size.shortestSide/6)*5,
+                                //color: Colors.lime,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(0,0,20,0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      
+                                      Text("Clouds",
+                                          style: TextStyle(color: Colors.white, fontSize: 16 ),
+                                      ),
+
+                                      updateCloudWidget("$city")
+                                      
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+                      
+                      //Humidity
+                      Container(
+                        height: mesure/4,
+                        width: size.shortestSide,
+                        //color: Colors.red[400],
+                        child: Center(
+                          child: Row(
+                            children: [
+                              
+                              //Icon
+                              Container(
+                                height: mesure/4,
+                                width: size.shortestSide/6,
+                                //color: Colors.pinkAccent,
+                                child: Center(child: Icon(Icons.invert_colors, color: Colors.white,)),
+                              ),
+
+                              //Humidity
+                              Container(
+                                height: mesure/4,
+                                width: (size.shortestSide/6)*5,
+                                //color: Colors.lime,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(0,0,20,0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      
+                                      Text("Humidity",
+                                          style: TextStyle(color: Colors.white, fontSize: 16 ),
+                                      ),
+
+                                      updateHumidityWidget("$city")
+                                      
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+
+
+
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      //Wind speed
+                      Container(
+                        height: mesure/4,
+                        width: size.shortestSide,
+                        //color: Colors.red[400],
+                        child: Center(
+                          child: Row(
+                            children: [
+                              
+                              //Icon
+                              Container(
+                                height: mesure/4,
+                                width: size.shortestSide/6,
+                                //color: Colors.pinkAccent,
+                                child: Center(child: Icon(Icons.speed, color: Colors.white,)),
+                              ),
+
+                              //Wind speed
+                              Container(
+                                height: mesure/4,
+                                width: (size.shortestSide/6)*5,
+                                //color: Colors.lime,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(0,0,20,0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      
+                                      Text("Wind speed",
+                                          style: TextStyle(color: Colors.white, fontSize: 16 ),
+                                      ),
+
+                                      updateWindSpeedWidget("$city")
+                                      
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+
+
+
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      //Wind direction
+                      Container(
+                        height: mesure/4,
+                        width: size.shortestSide,
+                        //color: Colors.red[400],
+                        child: Center(
+                          child: Row(
+                            children: [
+                              
+                              //Icon
+                              Container(
+                                height: mesure/4,
+                                width: size.shortestSide/6,
+                                //color: Colors.pinkAccent,
+                                child: Center(child: Icon(Icons.show_chart, color: Colors.white,)),
+                              ),
+
+                              //Wind direction
+                              Container(
+                                height: mesure/4,
+                                width: (size.shortestSide/6)*5,
+                                //color: Colors.lime,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(0,0,20,0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      
+                                      Text("Wind direction",
+                                          style: TextStyle(color: Colors.white, fontSize: 16 ),
+                                      ),
+
+                                      updateWindDirectionWidget("$city")
+                                      
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+
+
+
+                            ],
+                          ),
+                        ),
+                      ),
+
+                    ],
+                  ),
+                  
+                      
+
+
+                    
+                ),
+              ),
+            ),
+
+
+            myDivider(15,15),
+
             //Horaires Journee / Weather today
             ListTile(
               contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
@@ -582,7 +1153,7 @@ class WeatherPageState extends State<WeatherPage>
                       width: size.shortestSide,
                       //color: Colors.grey,
                       child: Center(
-                        child: titleText("Horaires"),
+                        child: titleText("Weather Tomorrow"),
                       ),
                     ),
 
@@ -593,97 +1164,37 @@ class WeatherPageState extends State<WeatherPage>
                       //color: Colors.green,
                       child: Padding(
                         padding: EdgeInsets.fromLTRB(0,5,0,5),
-                        child: ListView(
+                        
+                        child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          children: <Widget>[
-                            
-                            SizedBox(width: 10,),
+                          itemCount: 7, 
+                          itemBuilder: (BuildContext context, int position){
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                height: (mesure*1.125) - (mesure/5),
+                                width: (size.shortestSide)/4,
+                                //color: Colors.red,
+                                decoration: BoxDecoration(
+                                  //color: Colors.grey[300],
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(18.0), 
+                                  border: Border.all(color: Colors.grey[300] , width: 2)
+                                ),
 
-                            //1
-                            Container(
-                              height: (mesure*1.125) - (mesure/5),
-                              width: (size.shortestSide)/4,
-                              //color: Colors.red,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(18.0), 
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+
+                                    updateWeatherTomorrowWidget("$city", position)
+                                  ],
+                                )
+
                               ),
-                            ),
-
-                            myVerticalDivider(),
-
-                            //2
-                            Container(
-                              height: (mesure*1.125) - (mesure/5),
-                              width: (size.shortestSide)/4,
-                              //color: Colors.red,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(18.0), 
-                              ),
-                            ),
-
-                            myVerticalDivider(),
-
-                            //3
-                            Container(
-                              height: (mesure*1.125) - (mesure/5),
-                              width: (size.shortestSide)/4,
-                              //color: Colors.red,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(18.0), 
-                              ),
-                            ),
-
-                            myVerticalDivider(),
-
-                            //4
-                            Container(
-                              height: (mesure*1.125) - (mesure/5),
-                              width: (size.shortestSide)/4,
-                              //color: Colors.red,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(18.0), 
-                              ),
-                            ),
-
-                            myVerticalDivider(),
-
-                            //5
-                            Container(
-                              height: (mesure*1.125) - (mesure/5),
-                              width: (size.shortestSide)/4,
-                              //color: Colors.red,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(18.0), 
-                              ),
-                            ),
-                            myVerticalDivider(),
-
-                            //6
-                            Container(
-                              height: (mesure*1.125) - (mesure/5),
-                              width: (size.shortestSide)/4,
-                              //color: Colors.red,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[300],
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.circular(18.0), 
-                              ),
-                            ),
-
-                            SizedBox(width: 10,)
-
-                          ],
-                        ),
+                            );
+                          }
+                          ),
+                
                          
                       ),
 
@@ -697,13 +1208,13 @@ class WeatherPageState extends State<WeatherPage>
 
             myDivider(15,15),
 
-            // 7Days
+            // 5Days
             ListTile(
               contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
               title: Container(
                 height: mesure*(1.5),
                 width: size.shortestSide,
-                color: Colors.red,
+                //color: Colors.red,
                 child: Column(
                   children: <Widget>[
                     
@@ -711,9 +1222,9 @@ class WeatherPageState extends State<WeatherPage>
                     Container(
                       height: mesure/5,
                       width: size.shortestSide,
-                      color: Colors.grey,
+                      //color: Colors.grey,
                       child: Center(
-                        child: titleText("QUOTIDIEN"),
+                        child: titleText("This week"),
                       ),
                     ),
 
@@ -721,65 +1232,47 @@ class WeatherPageState extends State<WeatherPage>
                     Container(
                       height: (mesure*1.5) - (mesure/5),
                       width: size.shortestSide,
-                      color: Colors.green,
+                      //color: Colors.green,
                       child: Padding(
                         padding: EdgeInsets.all(5),
-                        child: ListView(
+                        child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          children: <Widget>[
-                            
-                            //1
-                            Container(
-                              height: (mesure*1.5) - (mesure/5),
-                              width: (size.shortestSide)/4,
-                              color: Colors.red,
-                            ),
+                          itemCount: 5,
+                          itemBuilder: (BuildContext context, int position){
 
-                            myVerticalDivider(),
+                            var lst = new List(5); 
+                            lst[0] = 4; 
+                            lst[1] = 12; 
+                            lst[2] = 20;
+                            lst[3] = 28;
+                            lst[4] = 37;
 
-                            //2
-                            Container(
-                              height: (mesure*1.5) - (mesure/5),
-                              width: (size.shortestSide)/4,
-                              color: Colors.red,
-                            ),
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                height: (mesure*1.5) - (mesure/5),
+                                width: (size.shortestSide)/4,
+                                //color: Colors.red,
+                                decoration: BoxDecoration(
+                                  //color: Colors.grey[300],
+                                  shape: BoxShape.rectangle,
+                                  borderRadius: BorderRadius.circular(18.0), 
+                                  border: Border.all(color: Colors.grey[300] , width: 2)
+                                ),
 
-                            myVerticalDivider(),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    update5DaysWeatherWidget("$city",lst[position])
+                                    
+                                  ],
+                                )
 
-                            //3
-                            Container(
-                              height: (mesure*1.5) - (mesure/5),
-                              width: (size.shortestSide)/4,
-                              color: Colors.red,
-                            ),
+                              ),
+                            );
 
-                            myVerticalDivider(),
-
-                            //4
-                            Container(
-                              height: (mesure*1.5) - (mesure/5),
-                              width: (size.shortestSide)/4,
-                              color: Colors.red,
-                            ),
-
-                            myVerticalDivider(),
-
-                            //5
-                            Container(
-                              height: (mesure*1.5) - (mesure/5),
-                              width: (size.shortestSide)/4,
-                              color: Colors.red,
-                            ),
-
-                            myVerticalDivider(),
-
-                            //6
-                            Container(
-                              height: (mesure*1.5) - (mesure/5),
-                              width: (size.shortestSide)/4,
-                              color: Colors.red,
-                            ),
-                          ],
+                          },
+                          
                         ),
                          
                       ),
@@ -795,113 +1288,228 @@ class WeatherPageState extends State<WeatherPage>
 
             myDivider(15,15),
 
-            //Detail
+           //Details zyada
             ListTile(
               contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
               title: Container(
-                height: mesure,
+                height: mesure*1.25,
                 width: size.shortestSide,
-                color: Colors.grey,
+                //color: Colors.grey,
                 child: Center(
-                  child: Column(
-                    children:<Widget>[
+                  child:ListView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    children:<Widget> [
 
-                      //Text Detalis
+
+                      //More Details text
                       Container(
-                        height: mesure/5,
+                        height: mesure/4,
                         width: size.shortestSide,
-                        color: Colors.grey,
+                        //color: Colors.red[400],
                         child: Center(
-                          child: titleText("DETAILS") ,
+                          child: titleText("More details")
                         ),
                       ),
 
-                      //Details
+                      //Wind speed
                       Container(
-                        height: mesure - (mesure/5),
+                        height: mesure/4,
                         width: size.shortestSide,
-                        color: Colors.green,
-                        child: ListView(
-                          physics: const NeverScrollableScrollPhysics(),
-                          children:<Widget> [
+                        //color: Colors.red[400],
+                        child: Center(
+                          child: Row(
+                            children: [
+                              
+                              //Icon
+                              Container(
+                                height: mesure/4,
+                                width: size.shortestSide/6,
+                                //color: Colors.pinkAccent,
+                                child: Center(child: Icon(Icons.speed, color: Colors.white,)),
+                              ),
 
-                            Container(
-                              height: (mesure - (mesure/5))/2,
-                              width: size.shortestSide,
-                              color: Colors.red[300],
-                              child: Center(
-                                child: Row(
-                                  children:<Widget> [
-                                    
-                                    Container(
-                                      height: (mesure - (mesure/5))/2,
-                                      width: size.shortestSide/2,
-                                      color: Colors.red[400],
-                                      child: Center(
-                                        child: titleText("Rain %"),
+                              //Wind speed
+                              Container(
+                                height: mesure/4,
+                                width: (size.shortestSide/6)*5,
+                                //color: Colors.lime,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(0,0,20,0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      
+                                      Text("Wind speed",
+                                          style: TextStyle(color: Colors.white, fontSize: 16 ),
                                       ),
-                                    ),
 
-                                    Container(
-                                      height: (mesure - (mesure/5))/2,
-                                      width: size.shortestSide/2,
-                                      color: Colors.red[200],
-                                      child: Center(
-                                        child: titleText("Wind speed"),
-                                      ),
-                                    ),
-
-                                  ],
+                                      updateWindSpeedWidget("$city")
+                                      
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
 
-                            Container(
-                              height: (mesure - (mesure/5))/2,
-                              width: size.shortestSide,
-                              color: Colors.red[300],
-                              child: Center(
-                                child: Row(
-                                  children:<Widget> [
-                                    
-                                    Container(
-                                      height: (mesure - (mesure/5))/2,
-                                      width: size.shortestSide/2,
-                                      color: Colors.red[100],
-                                      child: Center(
-                                        child: titleText("Humidity %"),
-                                      ),
-                                    ),
 
-                                    Container(
-                                      height: (mesure - (mesure/5))/2,
-                                      width: size.shortestSide/2,
-                                      color: Colors.red[300],
-                                      child: Center(
-                                        child: titleText("UV index"),
-                                      ),
-                                    ),
 
-                                  ],
-                                ),
-                              ),
-                            ),
 
-                
-
-                          ],
-                        ) ,
+                            ],
+                          ),
+                        ),
                       ),
-                      
+
+                      //Wind direction
+                      Container(
+                        height: mesure/4,
+                        width: size.shortestSide,
+                        //color: Colors.red[400],
+                        child: Center(
+                          child: Row(
+                            children: [
+                              
+                              //Icon
+                              Container(
+                                height: mesure/4,
+                                width: size.shortestSide/6,
+                                //color: Colors.pinkAccent,
+                                child: Center(child: Icon(Icons.show_chart, color: Colors.white,)),
+                              ),
+
+                              //Wind direction
+                              Container(
+                                height: mesure/4,
+                                width: (size.shortestSide/6)*5,
+                                //color: Colors.lime,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(0,0,20,0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      
+                                      Text("Wind direction",
+                                          style: TextStyle(color: Colors.white, fontSize: 16 ),
+                                      ),
+
+                                      updateWindDirectionWidget("$city")
+                                      
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      //Pressure
+                      Container(
+                        height: mesure/4,
+                        width: size.shortestSide,
+                        //color: Colors.red[400],
+                        child: Center(
+                          child: Row(
+                            children: [
+                              
+                              //Icon
+                              Container(
+                                height: mesure/4,
+                                width: size.shortestSide/6,
+                                //color: Colors.pinkAccent,
+                                child: Center(child: Icon(Icons.shutter_speed, color: Colors.white,)),
+                              ),
+
+                              //Pressure
+                              Container(
+                                height: mesure/4,
+                                width: (size.shortestSide/6)*5,
+                                //color: Colors.lime,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(0,0,20,0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      
+                                      Text("Pressure",
+                                          style: TextStyle(color: Colors.white, fontSize: 16 ),
+                                      ),
+
+                                      updatePressureWidget("$city")
+                                      
+                                    ],
+                                  ),
+                                ),
+                              ),
 
 
+                            ],
+                          ),
+                        ),
+                      ),
+                    
+                      //Visibility
+                      Container(
+                        height: mesure/4,
+                        width: size.shortestSide,
+                        //color: Colors.red[400],
+                        child: Center(
+                          child: Row(
+                            children: [
+                              
+                              //Icon
+                              Container(
+                                height: mesure/4,
+                                width: size.shortestSide/6,
+                                //color: Colors.pinkAccent,
+                                child: Center(child: Icon(Icons.remove_red_eye, color: Colors.white,)),
+                              ),
+
+                              //Humidity
+                              Container(
+                                height: mesure/4,
+                                width: (size.shortestSide/6)*5,
+                                //color: Colors.lime,
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(0,0,20,0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      
+                                      Text("Visibility",
+                                          style: TextStyle(color: Colors.white, fontSize: 16 ),
+                                      ),
+
+                                      updateVisibilityWidget("$city")
+                                      
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+
+
+
+                            ],
+                          ),
+                        ),
+                      ),
+
+                    
                     ],
-                  )
+                  ),
+               
                 ),
               ),
             ),
-
-            myDivider(15,15),
+           
+           Divider(
+              color: Colors.white,
+              thickness: 0.5,
+              indent: size.shortestSide/4,
+              endIndent: size.shortestSide/4,
+            )
+            
 
 
           ],
@@ -930,8 +1538,8 @@ class WeatherPageState extends State<WeatherPage>
   return VerticalDivider(
               color: Colors.white,
               thickness: 0.5,
-              indent: 5,
-              endIndent: 5,
+              indent: 15,
+              endIndent: 15,
             );
   }
 
@@ -941,10 +1549,27 @@ class WeatherPageState extends State<WeatherPage>
       "$text",
       style: TextStyle(
         color: Colors.white,
-        fontSize: 18,
+        fontSize: 17,
         //fontWeight: FontWeight.w100
       ),
     );
   }
+
+//   void _showAlertMessage(BuildContext context, String alertMessage)
+// {
+//   var alert = new AlertDialog(
+//     title: new Text("Alert Dialog"),
+//     content: new Text(alertMessage),
+//     actions: <Widget>[
+//       new FlatButton(
+//         onPressed: () {Navigator.pop(context);},  
+//         child: new Text("OK"),
+//         ),
+//     ],
+//   );
+
+//   showDialog(context: context, builder: (context) => alert );
+
+// }
 
  
