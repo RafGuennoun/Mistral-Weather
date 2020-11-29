@@ -925,11 +925,11 @@ class WeatherPageState extends State<WeatherPage>
 
             myDivider(15,15),
 
-            //Detail essentiels Humidite Wind speed
+            //Detail essentiels Clouds Humidite
             ListTile(
               contentPadding: EdgeInsets.only(left: 0.0, right: 0.0),
               title: Container(
-                height: mesure,
+                height: mesure/2,
                 width: size.shortestSide,
                 //color: Colors.grey,
                 child: Center(
@@ -1029,99 +1029,6 @@ class WeatherPageState extends State<WeatherPage>
                         ),
                       ),
 
-                      //Wind speed
-                      Container(
-                        height: mesure/4,
-                        width: size.shortestSide,
-                        //color: Colors.red[400],
-                        child: Center(
-                          child: Row(
-                            children: [
-                              
-                              //Icon
-                              Container(
-                                height: mesure/4,
-                                width: size.shortestSide/6,
-                                //color: Colors.pinkAccent,
-                                child: Center(child: Icon(Icons.speed, color: Colors.white,)),
-                              ),
-
-                              //Wind speed
-                              Container(
-                                height: mesure/4,
-                                width: (size.shortestSide/6)*5,
-                                //color: Colors.lime,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(0,0,20,0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      
-                                      Text("Wind speed",
-                                          style: TextStyle(color: Colors.white, fontSize: 16 ),
-                                      ),
-
-                                      updateWindSpeedWidget("$city")
-                                      
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-
-
-
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      //Wind direction
-                      Container(
-                        height: mesure/4,
-                        width: size.shortestSide,
-                        //color: Colors.red[400],
-                        child: Center(
-                          child: Row(
-                            children: [
-                              
-                              //Icon
-                              Container(
-                                height: mesure/4,
-                                width: size.shortestSide/6,
-                                //color: Colors.pinkAccent,
-                                child: Center(child: Icon(Icons.show_chart, color: Colors.white,)),
-                              ),
-
-                              //Wind direction
-                              Container(
-                                height: mesure/4,
-                                width: (size.shortestSide/6)*5,
-                                //color: Colors.lime,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(0,0,20,0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      
-                                      Text("Wind direction",
-                                          style: TextStyle(color: Colors.white, fontSize: 16 ),
-                                      ),
-
-                                      updateWindDirectionWidget("$city")
-                                      
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-
-
-
-                            ],
-                          ),
-                        ),
-                      ),
 
                     ],
                   ),
